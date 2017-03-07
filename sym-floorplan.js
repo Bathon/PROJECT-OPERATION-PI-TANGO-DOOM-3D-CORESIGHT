@@ -8,38 +8,41 @@
 		img.onload = loadImage;
 		
 		function loadImage() {
+			
+			// Setup variables to hold image and canvas
 			var canvas = document.getElementById("modified_map_container");
 			canvas.width = img.width;
 			canvas.height = img.height;
-			
 			var context = canvas.getContext('2d');
 			context.drawImage(img, 0, 0);
-			
 			var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 			
 			//search for red pixels
 			var x;
 			var y;
 			var index;
+			var found_pixels;
+			
+			// Find pixels
 			for( x = 0; x < canvas.width; x++ ) {
 				for( y = 0; y < canvas.height; y++ ) {
 					index = (( y * canvas.width ) + x) * 4;
-					//imageData.data[index] = 255 - imageData.data[index];
-					//imageData.data[index + 1] = 255 - imageData.data[index + 1];
-					//imageData.data[index + 2] = 255 - imageData.data[index + 2];
-					//imageData.data[index + 3] = 255;
-					
-					//if the pixel is just red
-					if(imageData.data[index] == 255 && imageData.data[index + 1] == 0 && imageData.data[index + 2] == 0) {
-						document.getElementById("found").style.color = "red";
+					if(imageData.data[index] == 254 && imageData.data[index + 1] == 0 && imageData.data[index + 2] == 0) {
+						// Add the coordinates to the array
+						found_pixels.push(x.toString() + " " + y.toString());
 					}
 				}
 			}
 			
+			// Set up objects at locations
+			
 			context.putImageData(imageData, 0, 0);
 		}
+		
+		
+		
 		/*
-		// Hovering over image (TODO: coordinates)
+		// Hovering over image
         document.getElementById("hover_test").onmouseover = mouseOver;
 		document.getElementById("hover_test").onmouseout = mouseOut;
 		this.onDataUpdate = dataUpdate;

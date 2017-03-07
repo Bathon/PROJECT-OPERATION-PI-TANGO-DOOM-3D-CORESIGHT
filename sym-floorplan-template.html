@@ -1,7 +1,6 @@
 <style>
-canvas {
-	width: 100%;
-	height: auto;
+.hover_objects {
+	display: none;
 }
 </style>
 
@@ -14,7 +13,10 @@ canvas {
     <div>{{label}}</div>
     <div>{{time}}</div>
 	-->
-	<div id="found" color="white">Red pixel located</div>
+
 	<img id="map_container" src="Scripts\app\editor\symbols\ext\first-floor-large.png" alt="Image Not Loaded" style="display: none"></img>
-	<canvas id="modified_map_container"></canvas>
+	<div id="canvas_container" style="position: absolute; width: 100%; height: auto">
+		<canvas id="modified_map_container" style="position: relative; width: 100%; height: auto"></canvas>
+	</div>
+	<div class="hover_objects">wut</div>
 </div>

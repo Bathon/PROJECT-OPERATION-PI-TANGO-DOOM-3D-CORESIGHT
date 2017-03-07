@@ -1,7 +1,5 @@
 # PROJECT-OPERATION-PI-TANGO-DOOM-3D-CORESIGHT
 
----
-
 ## Project Checklist:
 
 * Import image
