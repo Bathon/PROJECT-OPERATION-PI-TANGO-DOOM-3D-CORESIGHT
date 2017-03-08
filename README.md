@@ -2,7 +2,7 @@
 
 ## Features:
 * Import an image created by a Google Tango enabled device
-* Find the waypoints in the image
+* Find the waypoints in the image and create indicators for the data
 
 ## Project Checklist:
 

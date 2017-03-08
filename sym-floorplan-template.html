@@ -1,13 +1,10 @@
 <style>
 .hover_objects {
-	opacity: 0;
+	opacity: 0.25;
 	display: inline-block;
 	height: auto;
 	width: auto;
-	position: absolute;
-	top: 157px;
-	left: 159px;
-	
+	position: absolute;	
 	
 	color: black;
 	background-color: lightgrey;
@@ -32,12 +29,12 @@
     <div>{{time}}</div>
 	-->
 
-	<img id="map_container" src="Scripts\app\editor\symbols\ext\first-floor-large.png" alt="Image Not Loaded" style="display: none"></img>
+	<img id="map_container" src="Scripts\app\editor\symbols\ext\Image-5887.png" alt="Image Not Loaded" style="display: none"></img>
 	
 	<div id="canvas_container" style="position: absolute; width: 100%; height: auto">
 		<canvas id="modified_map_container" style="position: relative; width: 100%; height: auto"></canvas>
-		<div class="hover_objects">
-			<div>{{label}}</div>
+		<div class="hover_objects" style="top: 0px; left: 0px">
+			<div ng-bind="label"></div>
 			<div>{{value}}</div>
 		</div>
 	</div>
