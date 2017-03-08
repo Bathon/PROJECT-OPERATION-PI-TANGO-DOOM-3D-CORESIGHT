@@ -29,33 +29,24 @@
 					index = (( y * canvas.width ) + x) * 4;
 					if(imageData.data[index] == 254 && imageData.data[index + 1] == 0 && imageData.data[index + 2] == 0) {
 						// Add the coordinates to the array
-						found_pixels.push(x.toString() + " " + y.toString());
+						found_pixels.push(x);
+						found_pixels.push(y);
 					}
 				}
 			}
 			
 			// Set up objects at locations
+			var i;
+			for ( i = 0; i < found_pixels.length; i += 2) {
+				x = found_pixels[i];
+				y = found_pixels[i + 1];
+			}
+			
 			
 			context.putImageData(imageData, 0, 0);
 		}
 		
-		
-		
-		/*
-		// Hovering over image
-        document.getElementById("hover_test").onmouseover = mouseOver;
-		document.getElementById("hover_test").onmouseout = mouseOut;
 		this.onDataUpdate = dataUpdate;
-		
-		function mouseOver() {
-			//document.getElementById("hover_test").style.color = "red";
-			document.getElementById("hover_test_2").style.display = "block";
-		}
-		
-		function mouseOut() {
-			//document.getElementById("hover_test").style.color = "white";
-			document.getElementById("hover_test_2").style.display = "none";
-		}*/
 		
         function dataUpdate(data) {
             if(data) {
