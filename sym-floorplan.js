@@ -22,7 +22,7 @@
 		document.getElementsByClassName("hover_objects").onclick = selectWaypoint;
 		
         function dataUpdate(data) {
-            if(data) {
+			if(data) {
 				// Multiple data source code
 				
 				
@@ -101,6 +101,8 @@
 			
 			// Draw the image to the canvas
 			context.putImageData(imageData, 0, 0);
+			
+			scope.upload_hidden = "_hidden";
 		}
 		
 		function selectWaypoint() {
@@ -161,3 +163,20 @@
     CS.symbolCatalog.register(definition);
 })(window.PIVisualization);
 
+
+// Upload an image file for the symbol to process
+function loadFile() {
+	var image_element = document.getElementById('map_container');
+	var file = document.querySelector('input[type=file]').files[0];
+	var reader = new FileReader();
+	
+	reader.onloadend = function() {
+		image_element.src = reader.result;
+	}
+	
+	if(file) {
+		reader.readAsDataURL(file);
+	} else {
+		image_element.src = "";
+	}
+}

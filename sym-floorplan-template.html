@@ -1,6 +1,6 @@
 <style>
 .hover_objects {
-	opacity: 0.25;
+	opacity: 0.2;
 	display: inline-block;
 	height: auto;
 	width: auto;
@@ -18,9 +18,13 @@
 	opacity: 0.85;
 }
 
+#upload_container_hidden {
+	display: none;
+}
+
 </style>
 
-<div id="container" ng-style="{background: config.BackgroundColor, color: config.TextColor}">
+<div id="container" ng-style="{background: config.BackgroundColor, color: config.TextColor}" ng-app="floorPlanApp">
 <!--
 	<div id="hover_test">Testing the hover functionality</div>
 	<div id="hover_test_2" style="display: none">Hello there</div>
@@ -29,7 +33,9 @@
     <div>{{time}}</div>
 	-->
 
-	<img id="map_container" src="Scripts\app\editor\symbols\ext\Image-5887.png" alt="Image Not Loaded" style="display: none"></img>
+	<img id="map_container" src="" alt="Image Not Loaded" style="display: none"></img>
+
+	<input id="upload_container{{upload_hidden}}" type="file"  onchange="loadFile()" />
 	
 	<div id="canvas_container" style="position: absolute; width: 100%; height: auto">
 		<canvas id="modified_map_container" style="position: relative; width: 100%; height: auto"></canvas>
