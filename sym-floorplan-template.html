@@ -13,7 +13,9 @@
 	
 	border: 1px solid gray;
 	border-bottom: 4px solid gray;
-	border-radius: 5px
+	border-radius: 5px;
+	
+	font-size: 8pt;
 }
 
 .hover_objects:hover {
@@ -34,20 +36,21 @@
 	<input id="upload_container{{upload_hidden}}" type="file"  onchange="loadFile()" />
 	
 	<!-- Container for image and hover objects -->
-	<div id="canvas_container" style="position: absolute; width: 100%; height: auto"  ng-controller="TestController">
+	<div id="canvas_container" style="position: absolute; width: 100%; height: auto">
 	
 		<!-- Processed image -->
 		<canvas id="modified_map_container" style="position: relative; width: 100%; height: auto"></canvas>
 		
 		<!-- Hover objects -->
-		<div class="hover_objects" style="top: 0px; left: 0px" >
-			<div>{{label}}</div>
-			<div>{{label1}}</div>
-			<div>{{value}}</div>
-			<div>{{time}}</div>
+		<div ng-repeat="hoverItem in hoverItems" class="hover_objects" style="top: {{hoverItem.y}}; left: {{hoverItem.x}}">
+			<div>Point: {{hoverItem.id}}</div>
+			<div ng-bind="dataItems[{{hoverItem.id}}].label"></div>
+			<div ng-bind="dataItems[{{hoverItem.id}}].value"></div>
+			
 		</div>
+		
 	</div>
-
+	
 </div>
 
 <!-- END CUSTOM FLOORPLAN SYMBOL -->
