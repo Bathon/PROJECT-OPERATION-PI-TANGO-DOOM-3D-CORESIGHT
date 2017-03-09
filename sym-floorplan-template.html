@@ -1,3 +1,5 @@
+<!-- BEGIN CUSTOM FLOORPLAN SYMBOL -->
+
 <style>
 .hover_objects {
 	opacity: 0.2;
@@ -24,25 +26,28 @@
 
 </style>
 
-<div id="container" ng-style="{background: config.BackgroundColor, color: config.TextColor}" ng-app="floorPlanApp">
-<!--
-	<div id="hover_test">Testing the hover functionality</div>
-	<div id="hover_test_2" style="display: none">Hello there</div>
-    <div>{{label}}</div>
-	<div>{{value}}</div>
-    <div>{{time}}</div>
-	-->
-
+<div id="container" ng-style="{background: config.BackgroundColor, color: config.TextColor}">
+	<!-- Invisible image to be processed -->
 	<img id="map_container" src="" alt="Image Not Loaded" style="display: none"></img>
 
+	<!-- Image uploader -->
 	<input id="upload_container{{upload_hidden}}" type="file"  onchange="loadFile()" />
 	
-	<div id="canvas_container" style="position: absolute; width: 100%; height: auto">
+	<!-- Container for image and hover objects -->
+	<div id="canvas_container" style="position: absolute; width: 100%; height: auto"  ng-controller="TestController">
+	
+		<!-- Processed image -->
 		<canvas id="modified_map_container" style="position: relative; width: 100%; height: auto"></canvas>
-		<div class="hover_objects" style="top: 0px; left: 0px">
-			<div ng-bind="label"></div>
+		
+		<!-- Hover objects -->
+		<div class="hover_objects" style="top: 0px; left: 0px" >
+			<div>{{label}}</div>
+			<div>{{label1}}</div>
 			<div>{{value}}</div>
+			<div>{{time}}</div>
 		</div>
 	</div>
 
 </div>
+
+<!-- END CUSTOM FLOORPLAN SYMBOL -->

@@ -1,14 +1,18 @@
+// Setup controller for hover points
+(function() {
+	angular.module('editorApp').controller('TestController', ['$scope', function($scope) {
+		$scope.label1 = "test label please ignore";
+	}]);
+}());
+
+// Setup symbol
 (function (CS) {
     function symbolVis() { }
     CS.deriveVisualizationFromBase(symbolVis);
-
+	
+	
+	
 	symbolVis.prototype.init = function (scope) {
-		// Setup offsets
-		var VERTICAL_OFFSET = -43;
-		var HORIZONTAL_OFFSET = 0;
-		
-		// Setup arrays to hold stuff
-		
 		// Parse image for red pixels (waypoints) and setup elements to hold the associated data
 		var img = document.getElementById('map_container');
 		img.onload = loadImage;
@@ -18,8 +22,6 @@
 		
 		// Update the data as necessary
 		this.onDataUpdate = dataUpdate;
-		
-		document.getElementsByClassName("hover_objects").onclick = selectWaypoint;
 		
         function dataUpdate(data) {
 			if(data) {
@@ -60,6 +62,11 @@
 						// Add the coordinates to the array
 						found_pixels.push(x);
 						found_pixels.push(y);
+						
+						// Log the discovery
+						console.log('Point found at x: '.concat(x.toString()));
+						console.log('Point found at y: '.concat(y.toString()));
+						
 					}
 				}
 			}
@@ -67,46 +74,14 @@
 			// Set up objects at found pixel locations
 			var i;
 			for ( i = 0; i < found_pixels.length; i += 2) {
-				// Create new div elements
-				var newDiv = document.createElement('div');
-				var newLabelDiv = document.createElement('div');
-				var newValueDiv = document.createElement('div');
-				
-				// Setup identification
-				newDiv.className = 'hover_objects';
-				newDiv.id = 'hover_obj_'.concat((i / 2).toString());
-				
-				x = ((found_pixels[i] / 4) + HORIZONTAL_OFFSET).toString().concat('px');
-				y = ((found_pixels[i + 1] / 4) + VERTICAL_OFFSET).toString().concat('px');
-				
-				console.log('Point found at x: '.concat(x.toString()));
-				console.log('Point found at y: '.concat(y.toString()));
-				
-				// Setup location
-				newDiv.style.left = x;
-				newDiv.style.top = y;
-				
-				// Setup values
-				newLabelDiv.innerHTML = 'TEST_label'.concat((i / 2).toString());
-				newValueDiv.innerHTML = 'TEST_value'.concat((i / 2).toString());
-				
-				newLabelDiv.setAttribute('ng-bind', 'label');
-				newValueDiv.setAttribute('ng-bind', 'value');
-				
-				// Insert objects into page
-				document.getElementById('canvas_container').appendChild(newDiv);
-				document.getElementById('hover_obj_'.concat((i / 2).toString())).appendChild(newLabelDiv);
-				document.getElementById('hover_obj_'.concat((i / 2).toString())).appendChild(newValueDiv);
+				addDiv(found_pixels[i], found_pixels[i + 1], i, scope);
 			}
 			
 			// Draw the image to the canvas
 			context.putImageData(imageData, 0, 0);
 			
+			// Hide the upload pane now that we're done with it
 			scope.upload_hidden = "_hidden";
-		}
-		
-		function selectWaypoint() {
-			console.log("Selected index: " + this.options[this.selectedIndex].getAttribute("value").toString());
 		}
 		
 		
@@ -138,13 +113,13 @@
 				title: 'Format Symbol',
 				// Define what the configuration does
 				action: function(context) {
-					console.log('Action used, hiding symbol.');
-				}
+					loadSettings(context);
+				}/*
 			}, {
 				title: 'Select Image',
 				action: function(context) {
 					console.log('Image changing option selected.');
-				}
+				}*/
             }];
         },
 		//configOptions: function() {
@@ -180,3 +155,57 @@ function loadFile() {
 		image_element.src = "";
 	}
 }
+
+// Modify the settings pane on load to dynamically create settings for each waypoint
+function loadSettings(context) {
+	console.log('Action used, hiding symbol.');
+}
+
+// Create, append, and (TODO) recompile hover objects
+function addDiv(x, y, i, scope) {
+	// Setup offsets
+	var VERTICAL_OFFSET = -43;
+	var HORIZONTAL_OFFSET = 0;
+		
+	// Create new div elements
+	var newDiv = document.createElement('div');
+	var newLabelDiv = document.createElement('div');
+	var newValueDiv = document.createElement('div');
+	
+	// Setup identification
+	newDiv.className = 'hover_objects';
+	newDiv.id = 'hover_obj_'.concat((i / 2).toString());
+	
+	x = ((x / 4) + HORIZONTAL_OFFSET).toString().concat('px');
+	y = ((y / 4) + VERTICAL_OFFSET).toString().concat('px');
+	
+	// Setup location
+	newDiv.style.left = x;
+	newDiv.style.top = y;
+	
+	// Setup values
+	newLabelDiv.innerHTML = 'TEST_label'.concat((i / 2).toString());
+	newValueDiv.innerHTML = 'TEST_value'.concat((i / 2).toString());
+	
+	newLabelDiv.setAttribute('ng-bind', 'label');
+	newValueDiv.setAttribute('ng-bind', 'value');
+	
+	// Insert objects into page
+	document.getElementById('canvas_container').appendChild(newDiv);
+	document.getElementById('hover_obj_'.concat((i / 2).toString())).appendChild(newLabelDiv);
+	document.getElementById('hover_obj_'.concat((i / 2).toString())).appendChild(newValueDiv);
+	
+	// Angular Compiling
+	
+	/*
+	angular.element(canvas_container).injector().invoke(function ($compile, scope) {
+		scope.$apply(function() {
+			var scope = angular.element(newDiv).scope();
+			$compile(newDiv)(scope);
+		});
+	});
+	*/
+}
+
+
+	
