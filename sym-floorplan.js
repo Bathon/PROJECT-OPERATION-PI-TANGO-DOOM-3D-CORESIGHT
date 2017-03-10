@@ -1,3 +1,19 @@
+/*
+*	Copyright 2017 [name of copyright owner]
+*
+*	Licensed under the Apache License, Version 2.0 (the "License");
+*	you may not use this file except in compliance with the License.
+*	You may obtain a copy of the License at
+*
+*		http://www.apache.org/licenses/LICENSE-2.0
+*
+*	Unless required by applicable law or agreed to in writing, software
+*	distributed under the License is distributed on an "AS IS" BASIS,
+*	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*	See the License for the specific language governing permissions and
+*	limitations under the License.
+*/
+
 // Setup symbol
 (function (CS) {
     function symbolVis() { }
@@ -21,27 +37,29 @@
 			// If there is new data to update
 			if(data) {
 				
-				console.log('Array length: '.concat(data.Data[0].Values.length));
+				//console.log(data.Data[0].Values[0].Value);
 				
-				// Multiple data source code
+				// Multiple data sources
 				var i;
-				var dataItems = [];
 				
-				if(scope.dataItems) {
+				// Create a new array if it's the first time past this code
+				if(!(scope.dataItems)) {
+					var dataItems = [];
+				} else {
 					dataItems = scope.dataItems;
 				}
 				
-				for( i = 0; i < data.Data.length; i++) {
-					if(data.Data[i].Label && !(dataItems[i].label)) {
+				for( i = 0; i < data.Data.length; i++ ) {
+					if(data.Data[i].Label) {
 						//If there is a new label, make a new object and put it in the array
 						console.log('New data point label: '.concat(data.Data[i].Label));
-						console.log('New data point value: '.concat(data.Data[i].Value));
-						var dataItem = {label:data.Data[i].Label, value:data.Data[i].Value};
+						//console.log('New data point value: '.concat(data.Data[i].Value));
+						var dataItem = {label:data.Data[i].Label, value:data.Data[i].Values[0].Value};
 						dataItems.push(dataItem);
 					} else {
 						//Otherwise, update the value in our old array
-						console.log('Updated data point value: '.concat(data.Data[i].Value));
-						dataItems[i].value = data.Data[i].Value;
+						console.log('Updated data point value: '.concat(data.Data[i].Values[0].Value));
+						dataItems[i].value = data.Data[i].Values[0].Value;
 					}
 					
 				}
@@ -69,7 +87,7 @@
 			var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 			
 			
-			// Search for red pixels
+			// Search for red pixels and replace purple pixels (position indicator)
 			for( x = 0; x < canvas.width; x++ ) {
 				for( y = 0; y < canvas.height; y++ ) {
 					index = (( y * canvas.width ) + x) * 4;
@@ -82,6 +100,21 @@
 						console.log('Point found at x: '.concat(x.toString()));
 						console.log('Point found at y: '.concat(y.toString()));
 						
+					} else if(imageData.data[index] == 132 && imageData.data[index + 1] == 82 && imageData.data[index + 2] == 140) {
+						// Purple pixel with grey behind
+						imageData.data[index] = 210;
+						imageData.data[index + 1] = 210;
+						imageData.data[index + 2] = 210;
+					} else if(imageData.data[index] == 84 && imageData.data[index + 1] == 71 && imageData.data[index + 2] == 142) {
+						// Purple pixel with blue behind
+						imageData.data[index] = 21;
+						imageData.data[index + 1] = 166;
+						imageData.data[index + 2] = 217;
+					} else if(imageData.data[index] == 144 && imageData.data[index + 1] == 94 && imageData.data[index + 2] == 152) {
+						// Purple pixel with white behind
+						imageData.data[index] = 255;
+						imageData.data[index + 1] = 255;
+						imageData.data[index + 2] = 255;
 					}
 				}
 			}
@@ -90,11 +123,12 @@
 			var i;
 			var hoverItems = [];
 			for ( i = 0; i < found_pixels.length; i += 2) {
-				var hoverItem = {x:((found_pixels[i] / 4) + HORIZONTAL_OFFSET).toString().concat('px'), y:((found_pixels[i + 1] / 4) + VERTICAL_OFFSET).toString().concat('px'), id:(i / 2)};
+				var hoverItem = {x:((found_pixels[i] / 4) + HORIZONTAL_OFFSET).toString().concat('px'), y:((found_pixels[i + 1] / 4) + VERTICAL_OFFSET).toString().concat('px'), id:(i / 2), dataPoint:(i / 2)};
 				hoverItems.push(hoverItem);
 			}
 			
 			scope.hoverItems = hoverItems;
+			scope.numberOfHoverItems = hoverItems.length;
 			
 			// Draw the image to the canvas
 			context.putImageData(imageData, 0, 0);
@@ -124,35 +158,13 @@
 				DataQueryMode: CS.Extensibility.Enums.DataQueryMode.ModeSingleton,
 				// Default size
 				Height: 720,
-				Width: 1172
+				Width: 1172,
+				
+				// Custom configuration settings
+
             };
         },
-		configOptions: function (context, clickedElement) {
-            return [{
-				// Add a title that will appear when the user right-clicks a symbol
-				title: 'Format Symbol',
-				// Define what the configuration does
-				action: function(context) {
-					loadSettings(context);
-				}/*
-			}, {
-				title: 'Select Image',
-				action: function(context) {
-					console.log('Image changing option selected.');
-				}*/
-            }];
-        },
-		//configOptions: function() {
-		//	return [{
-		//		title: 'Format Symbol'
-		//		//'seperator'
-		//		//title: 'Hide',
-		//		action: function (context) {
-		//			console.log("Hide action preformed.");
-		//			//context.def.configure.hide(context.symbol);
-		//		}
-		//	}];
-		//},
+		configTitle: 'Setup waypoints'
     };
 
     CS.symbolCatalog.register(definition);
@@ -178,5 +190,6 @@ function loadFile() {
 
 // Modify the settings pane on load to dynamically create settings for each waypoint
 function loadSettings(context) {
-	console.log('Action used, hiding symbol.');
+	
+	console.log('Settings loaded');
 }	
