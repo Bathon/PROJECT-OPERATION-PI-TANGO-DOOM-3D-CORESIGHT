@@ -1,5 +1,5 @@
 <!--
-	Copyright 2017 [name of copyright owner]
+	Copyright 2017 OSISoft, LLC.
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -45,14 +45,14 @@
 
 </style>
 
-<div id="container" >
+<div id="container">
 	<!-- Invisible image to be processed -->
 	<img id="map_container" src="" alt="Image Not Loaded" style="display: none"></img>
 
 	<!-- Image uploader -->
 	<input id="upload_container{{upload_hidden}}" type="file"  onchange="loadFile()" />
 	
-	<!-- Container for image and hover objects -->
+	<!-- Container for processed image and hover objects -->
 	<div id="canvas_container" style="position: absolute; width: 100%; height: auto">
 	
 		<!-- Processed image -->
@@ -60,8 +60,8 @@
 		
 		<!-- Hover objects -->
 		<div ng-repeat="hoverItem in hoverItems" class="hover_objects" id="hover_item_{{hoverItem.id}}" style="top: {{hoverItem.y}}; left: {{hoverItem.x}}">
-			<div ng-bind="dataItems[{{hoverItem.dataPoint}}].label"></div>
-			<div ng-bind="dataItems[{{hoverItem.dataPoint}}].value"></div>
+			<div ng-bind="dataItems[{{hoverItem.id + 1}}].label"></div>
+			<div ng-bind="dataItems[{{hoverItem.id + 1}}].value"></div>
 			
 		</div>
 		

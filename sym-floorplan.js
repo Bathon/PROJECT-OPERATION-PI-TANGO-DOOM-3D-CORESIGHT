@@ -1,5 +1,5 @@
 /*
-*	Copyright 2017 [name of copyright owner]
+*	Copyright 2017 OSISoft, LLC.
 *
 *	Licensed under the Apache License, Version 2.0 (the "License");
 *	you may not use this file except in compliance with the License.
@@ -14,12 +14,9 @@
 *	limitations under the License.
 */
 
-// Setup symbol
 (function (CS) {
     function symbolVis() { }
     CS.deriveVisualizationFromBase(symbolVis);
-	
-	
 	
 	symbolVis.prototype.init = function (scope) {
 		
@@ -27,43 +24,53 @@
 		var img = document.getElementById('map_container');
 		img.onload = loadImage;
 		
-		// Change the settings pane depending on the waypoint selected
-		//document.getElementById("waypoint_selection").onchange = selectWaypoint;
-		
 		// Update the data as necessary
 		this.onDataUpdate = dataUpdate;
 		
+		// Remove local variables when destroyed
+		this.onDestroy = destroy;
+		
         function dataUpdate(data) {
-			// If there is new data to update
 			if(data) {
 				
-				//console.log(data.Data[0].Values[0].Value);
-				
-				// Multiple data sources
 				var i;
+				var dataItems = [];
 				
-				// Create a new array if it's the first time past this code
-				if(!(scope.dataItems)) {
-					var dataItems = [];
-				} else {
-					dataItems = scope.dataItems;
+				// Setup dataItems array
+				if(scope.dataItems && scope.numberOfHoverItems) {
+					if(scope.dataItems.length > 0) {
+						// If we've already exported the array to the scope, then retrieve it to append to or modify
+						dataItems = scope.dataItems;
+					} else {
+						// Otherwise, set up an array of the proper length for the number of waypoints
+						for( i = 0; i <= scope.numberOfHoverItems; i++) {
+							dataItems.push({label:"", value:""});
+						}
+					}
 				}
 				
-				for( i = 0; i < data.Data.length; i++ ) {
+				// Math.min would work for this, but this allows the next point to be identified more easily
+				var min;
+				if( data.Data.length < scope.numberOfHoverItems + 1 ) {
+					min = data.Data.length;
+					// Set the label of the next uninitialized waypoint
+					dataItems[min].label = "Drag in tag to associate";
+					dataItems[min].value = "it with this waypoint.";
+					
+				} else {
+					min = scope.numberOfHoverItems + 1;
+				}
+				
+				// Get current data label and values
+				for( i = 0; i < min; i++) {
 					if(data.Data[i].Label) {
-						//If there is a new label, make a new object and put it in the array
-						console.log('New data point label: '.concat(data.Data[i].Label));
-						//console.log('New data point value: '.concat(data.Data[i].Value));
-						var dataItem = {label:data.Data[i].Label, value:data.Data[i].Values[0].Value};
-						dataItems.push(dataItem);
-					} else {
-						//Otherwise, update the value in our old array
-						console.log('Updated data point value: '.concat(data.Data[i].Values[0].Value));
-						dataItems[i].value = data.Data[i].Values[0].Value;
+						dataItems[i].label = data.Data[i].Label;
 					}
 					
+					dataItems[i].value = data.Data[i].Values[0].Value;
 				}
 				
+				// Export the array to the current scope
 				scope.dataItems = dataItems;
 				
             }
@@ -72,7 +79,6 @@
 		function loadImage() {
 			// Setup offsets
 			var VERTICAL_OFFSET = -29;
-			var HORIZONTAL_OFFSET = 0;
 			
 			// Setup variables to hold image, canvas, etc.
 			var x;
@@ -95,22 +101,20 @@
 						// Add the coordinates to the array
 						found_pixels.push(x);
 						found_pixels.push(y);
-						
-						// Log the discovery
-						console.log('Point found at x: '.concat(x.toString()));
-						console.log('Point found at y: '.concat(y.toString()));
-						
-					} else if(imageData.data[index] == 132 && imageData.data[index + 1] == 82 && imageData.data[index + 2] == 140) {
+					}
+					else if(imageData.data[index] == 132 && imageData.data[index + 1] == 82 && imageData.data[index + 2] == 140) {
 						// Purple pixel with grey behind
 						imageData.data[index] = 210;
 						imageData.data[index + 1] = 210;
 						imageData.data[index + 2] = 210;
-					} else if(imageData.data[index] == 84 && imageData.data[index + 1] == 71 && imageData.data[index + 2] == 142) {
+					}
+					else if(imageData.data[index] == 84 && imageData.data[index + 1] == 71 && imageData.data[index + 2] == 142) {
 						// Purple pixel with blue behind
 						imageData.data[index] = 21;
 						imageData.data[index + 1] = 166;
 						imageData.data[index + 2] = 217;
-					} else if(imageData.data[index] == 144 && imageData.data[index + 1] == 94 && imageData.data[index + 2] == 152) {
+					}
+					else if(imageData.data[index] == 144 && imageData.data[index + 1] == 94 && imageData.data[index + 2] == 152) {
 						// Purple pixel with white behind
 						imageData.data[index] = 255;
 						imageData.data[index + 1] = 255;
@@ -123,10 +127,11 @@
 			var i;
 			var hoverItems = [];
 			for ( i = 0; i < found_pixels.length; i += 2) {
-				var hoverItem = {x:((found_pixels[i] / 4) + HORIZONTAL_OFFSET).toString().concat('px'), y:((found_pixels[i + 1] / 4) + VERTICAL_OFFSET).toString().concat('px'), id:(i / 2), dataPoint:(i / 2)};
+				var hoverItem = {x:(found_pixels[i] / 4).toString().concat('px'), y:((found_pixels[i + 1] / 4) + VERTICAL_OFFSET).toString().concat('px'), id:(i / 2)};
 				hoverItems.push(hoverItem);
 			}
 			
+			// Export the waypoint hover items and the number of waypoints found
 			scope.hoverItems = hoverItems;
 			scope.numberOfHoverItems = hoverItems.length;
 			
@@ -137,8 +142,9 @@
 			scope.upload_hidden = "_hidden";
 		}
 		
-		
-		// TODO: angular $compile
+		function destroy() {
+			delete scope.dataItems;
+		}
     };
 
     var definition = {
@@ -156,15 +162,12 @@
     	    return {
     	        DataShape: 'TimeSeries',
 				DataQueryMode: CS.Extensibility.Enums.DataQueryMode.ModeSingleton,
-				// Default size
+				// Default size, which is exactly 4x smaller than the images exported by the Tango app
 				Height: 720,
-				Width: 1172,
-				
-				// Custom configuration settings
-
+				Width: 1172
             };
         },
-		configTitle: 'Setup waypoints'
+		configTitle: 'About'
     };
 
     CS.symbolCatalog.register(definition);
@@ -187,9 +190,4 @@ function loadFile() {
 		image_element.src = "";
 	}
 }
-
-// Modify the settings pane on load to dynamically create settings for each waypoint
-function loadSettings(context) {
 	
-	console.log('Settings loaded');
-}	
