@@ -127,6 +127,7 @@
 			var i;
 			var hoverItems = [];
 			for ( i = 0; i < found_pixels.length; i += 2) {
+				// The logic here is necessary to scale the hover item's location relative to the waypoint's location
 				var hoverItem = {x:(found_pixels[i] / 4).toString().concat('px'), y:((found_pixels[i + 1] / 4) + VERTICAL_OFFSET).toString().concat('px'), id:(i / 2)};
 				hoverItems.push(hoverItem);
 			}
